@@ -61,6 +61,24 @@ class Session(models.Model):
     hours = fields.Float(string="Duration in hours",
                          compute='_get_hours', inverse='_set_hours')
 
+    state = fields.Selection([
+        ('draft', "Draft"),
+        ('confirmed', "Confirmed"),
+        ('done', "Done"),
+    ])
+
+    @api.multi
+    def action_draft(self):
+        self.state = 'draft'
+
+    @api.multi
+    def action_confirm(self):
+        self.state = 'confirmed'
+
+    @api.multi
+    def action_done(self):
+        self.state = 'done'
+
     attendees_count = fields.Integer(
         string="Attendees count", compute='_get_attendees_count', store=True)
 
@@ -75,19 +93,21 @@ class Session(models.Model):
 	@api.onchange('seats', 'attendee_ids')
 	def _verify_valid_seats(self):
 		if self.seats < 0:
-		    return {
-		        'warning': {
-		            'title': "Incorrect 'seats' value",
-		            'message': "The number of available seats may not be negative",
-		        },
-		    }
+		    #return {
+		        #'warning': {
+		            #'title': "Incorrect 'seats' value",
+		            #'message': "The number of available seats may not be negative",
+		        #},
+		    #}
+		    return {'value': res, 'warning': warning, 'title': "Incorrect 'seats' value", 'message': "The number of available seats may not be negative"}
 		if self.seats < len(self.attendee_ids):
-		    return {
-		        'warning': {
-		            'title': "Too many attendees",
-		            'message': "Increase seats or remove excess attendees",
-		        },
-		    }
+		    #return {
+		        #'warning': {
+		            #'title': "Too many attendees",
+		            #'message': "Increase seats or remove excess attendees",
+		        #},
+		    #}
+		    return {'value': res, 'warning': warning, 'title': "Too many attendees", 'message': "Increase seats or remove excess attendees"}
 
     @api.depends('start_date', 'duration')
     def _get_end_date(self):
