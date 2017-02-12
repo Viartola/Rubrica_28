@@ -6,7 +6,7 @@
             <field name="on_create">True</field>
         </record>
 
-                 <record model="ir.actions.server" id="set_session_to_draft">
+        <record model="ir.actions.server" id="set_session_to_draft">
             <field name="name">Set session to Draft</field>
             <field name="model_id" ref="model_openacademy_session"/>
             <field name="code">
